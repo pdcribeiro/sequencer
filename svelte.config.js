@@ -9,15 +9,12 @@ const config = {
 
 	kit: {
 		adapter: adapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: null,
-			precompress: false,
-			strict: true,
+			fallback: '200.html',
 		}),
 		alias: {
 			$components: 'src/components',
 		},
+		prerender: { entries: [] },
 	},
 };
 
