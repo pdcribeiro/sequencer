@@ -40,7 +40,7 @@ create trigger after_update_elements__set_updated_timestamp
 create table element_connections (
   id bigint generated always as identity primary key,
 
-  element_id bigint references elements on delete cascade not null,
+  element bigint references elements on delete cascade not null,
   next bigint references elements on delete cascade not null,
 
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
@@ -79,8 +79,8 @@ create trigger after_update_sequences__set_updated_timestamp
 create table sequence_elements (
   id bigint generated always as identity primary key,
 
-  sequence_id bigint references sequences on delete cascade not null,
-  element_id bigint references elements on delete set null,
+  sequence bigint references sequences on delete cascade not null,
+  element bigint references elements on delete set null,
   prev bigint references sequence_elements on delete set null,
   next bigint references sequence_elements on delete set null,
 
