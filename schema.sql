@@ -28,8 +28,20 @@ create table elements (
   updated_at timestamp with time zone
 );
 
--- alter table elements
---   enable row level security;
+alter table elements
+  enable row level security;
+create policy "Users can insert their own elements"
+  on elements for insert
+  to authenticated -- specifying authenticated role stops execution for anon users
+  with check ((select auth.uid()) = owner);
+create policy "Users can view their own elements"
+  on elements for select
+  to authenticated
+  using ((select auth.uid()) = owner);
+create policy "Users can update their own elements"
+  on elements for update
+  to authenticated
+  using ((select auth.uid()) = owner);
 
 create trigger after_update_elements__set_updated_timestamp
   after update on elements
@@ -47,8 +59,38 @@ create table element_connections (
   updated_at timestamp with time zone
 );
 
--- alter table element_connections
---   enable row level security;
+alter table element_connections
+  enable row level security;
+create policy "Users can insert their own element connections"
+  on element_connections for insert
+  to authenticated
+  with check (
+    element in (
+      select id
+      from elements
+      where (select auth.uid()) = owner
+    )
+  );
+create policy "Users can view their own element connections"
+  on element_connections for select
+  to authenticated
+  using (
+    element in (
+      select id
+      from elements
+      where (select auth.uid()) = owner
+    )
+  );
+create policy "Users can delete their own element connections"
+  on element_connections for delete
+  to authenticated
+  using (
+    element in (
+      select id
+      from elements
+      where (select auth.uid()) = owner
+    )
+  );
 
 create trigger after_update_element_connections__set_updated_timestamp
   after update on element_connections
@@ -67,8 +109,20 @@ create table sequences (
   updated_at timestamp with time zone
 );
 
--- alter table sequences
---   enable row level security;
+alter table sequences
+  enable row level security;
+create policy "Users can insert their own sequences"
+  on sequences for insert
+  to authenticated
+  with check ((select auth.uid()) = owner);
+create policy "Users can view their own sequences"
+  on sequences for select
+  to authenticated
+  using ((select auth.uid()) = owner);
+create policy "Users can update their own sequences"
+  on sequences for update
+  to authenticated
+  using ((select auth.uid()) = owner);
 
 create trigger after_update_sequences__set_updated_timestamp
   after update on sequences
@@ -88,8 +142,38 @@ create table sequence_elements (
   updated_at timestamp with time zone
 );
 
--- alter table sequence_elements
---   enable row level security;
+alter table sequence_elements
+  enable row level security;
+create policy "Users can insert their own sequence elements"
+  on sequence_elements for insert
+  to authenticated
+  with check (
+    sequence in (
+      select id
+      from sequences
+      where (select auth.uid()) = owner
+    )
+  );
+create policy "Users can view their own sequence elements"
+  on sequence_elements for select
+  to authenticated
+  using (
+    sequence in (
+      select id
+      from sequences
+      where (select auth.uid()) = owner
+    )
+  );
+create policy "Users can delete their own sequence elements"
+  on sequence_elements for delete
+  to authenticated
+  using (
+    sequence in (
+      select id
+      from sequences
+      where (select auth.uid()) = owner
+    )
+  );
 
 create trigger after_update_sequence_elements__set_updated_timestamp
   after update on sequence_elements
