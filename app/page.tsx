@@ -10,14 +10,9 @@ export default async function Page() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return null;
-  }
-
-  const { data: elements } = await supabase
-    .from('elements')
-    .select()
-    .eq('owner', user.id);
+  const { data: elements = [] } = user
+    ? await supabase.from('elements').select().eq('owner', user.id)
+    : {};
 
   return (
     <div className="flex-1 w-full flex flex-col gap-20 items-center">
